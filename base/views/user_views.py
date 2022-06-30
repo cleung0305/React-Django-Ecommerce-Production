@@ -25,7 +25,7 @@ class GoogleLoginView(APIView):
         last_name = serializers.CharField(required=False, default='')
     
     def post(self, request, *args, **kwargs):
-        access_token = request.headers.get('Authorization') # get the google api access token, no particular use here, save for later development
+        #access_token = request.headers.get('Authorization') # get the google api access token, no particular use here, save for later development
         data = request.data
         aud = data['aud']
         google_validate_aud(aud=aud) # validate the client id recieved with the client id in backend
