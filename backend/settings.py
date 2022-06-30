@@ -211,9 +211,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000","http://localhost", "http://127.0.0.1", "http://127.0.0.1:8000", "https://lokishop.herokuapp.com", "http://lokishop.herokuapp.com"
+    "https://lokishop.herokuapp.com", "http://lokishop.herokuapp.com"
 ]
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000","http://localhost", "http://127.0.0.1", "http://127.0.0.1:8000", "https://lokishop.herokuapp.com", "http://lokishop.herokuapp.com"
+# ]
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # Custom Backend Authentication, allow users to login using email
 AUTHENTICATION_BACKENDS = ('base.custombackends.EmailBackend',)
