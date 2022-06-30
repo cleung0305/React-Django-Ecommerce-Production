@@ -6,7 +6,7 @@ const googleLogin = async ({ data, access_token }) => {
     //     'Content-Type': 'application/json'
     // }
 
-    const res = await axios.post('/api/users/google/', data)
+    const res = await axios.post('https://lokishop.herokuapp.com/api/users/google/', data)
     return await res.data
   }
 
