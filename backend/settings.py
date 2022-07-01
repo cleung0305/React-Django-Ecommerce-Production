@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('DJANGO_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'lokishop.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'lokishop.herokuapp.com', 'www.lokitech.shop', 'lokitech.shop']
 
 
 # Application definition
@@ -211,11 +211,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config
 CORS_ALLOWED_ORIGINS = [
-    "https://lokishop.herokuapp.com", "http://lokishop.herokuapp.com"
+    "http://localhost:3000","http://localhost", "http://127.0.0.1", "http://127.0.0.1:8000", "https://lokishop.herokuapp.com", "http://www.lokitech.shop"
 ]
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000","http://localhost", "http://127.0.0.1", "http://127.0.0.1:8000", "https://lokishop.herokuapp.com", "http://lokishop.herokuapp.com"
-# ]
 # CORS_ALLOW_ALL_ORIGINS = True
 
 # Custom Backend Authentication, allow users to login using email
