@@ -30,7 +30,7 @@ function PlaceOrderScreen() {
     const addPayPalScript = () => {
         const script = document.createElement('script')
         script.type = 'text/javascript'
-        script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
+        //script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
         script.async = true //give it time for SDK to load
         script.onload = () => {
             setSdkReady(true)
@@ -60,7 +60,6 @@ function PlaceOrderScreen() {
         } else {
             setSdkReady(true)
         }
-        console.log(window.paypal)
     }, [success, successPay, navigate])
 
     const placeOrderHandler = () => {
@@ -156,9 +155,10 @@ function PlaceOrderScreen() {
                         <div>
                             {loadingPay && <Loader />}
 
-                            {!sdkReady ? (<Loader />)
+                            <Message variant="danger">PayPal is disabled on this demo.</Message>
+                            {/* {!sdkReady ? (<Loader />)
                                     : (<PayPalButton amount={totalPrice} onClick={placeOrderHandler} onSuccess={successPaymentHandler} />)
-                            }
+                            } */}
                         </div>
                         : <Message variant="danger">Sorry, we currently only accept PayPal payments</Message>
                     }
