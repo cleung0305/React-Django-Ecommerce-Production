@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Row, Col, ListGroup, Image } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { PayPalButton } from 'react-paypal-button-v2'
 
@@ -30,7 +30,7 @@ function PlaceOrderScreen() {
     const addPayPalScript = () => {
         const script = document.createElement('script')
         script.type = 'text/javascript'
-        //script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
+        script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
         script.async = true //give it time for SDK to load
         script.onload = () => {
             setSdkReady(true)
@@ -50,15 +50,24 @@ function PlaceOrderScreen() {
             navigate('/payment')
         }
 
-        if(success && successPay) {
-            navigate(`/orders/${order._id}`)
-            dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
-        }
+        // if(success && successPay) {
+        //     navigate(`/orders/${order._id}`)
+        //     dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
+        // }
 
         if(!window.paypal){
             addPayPalScript() //check if paypal sdk is mounted to page
         } else {
             setSdkReady(true)
+        }
+
+        //demo version
+        if(success){
+            dispatch(payOrder(order._id, 'success'))
+        }
+        if(successPay) {
+            navigate(`/orders/${order._id}`)
+            dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
         }
     }, [success, successPay, navigate])
 
@@ -155,7 +164,8 @@ function PlaceOrderScreen() {
                         <div>
                             {loadingPay && <Loader />}
 
-                            <Message variant="danger">PayPal is disabled on this demo.</Message>
+                            <Message variant="danger">PayPal is disabled on this demo. Click the button below to complete checkout.</Message>
+                            <Button type="button" onClick={placeOrderHandler}>Complete payment</Button>
                             {/* {!sdkReady ? (<Loader />)
                                     : (<PayPalButton amount={totalPrice} onClick={placeOrderHandler} onSuccess={successPaymentHandler} />)
                             } */}

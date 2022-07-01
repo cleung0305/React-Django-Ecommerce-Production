@@ -37,7 +37,7 @@ function OrderScreen() {
     const addPayPalScript = () => {
         const script = document.createElement('script')
         script.type = 'text/javascript'
-        //script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
+        script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
         script.async = true //give it time for SDK to load
         script.onload = () => {
             setSdkReady(true)
@@ -65,7 +65,7 @@ function OrderScreen() {
     }, [dispatch, order, id, successPay, successDeliver])
 
     const successPaymentHandler = (paymentResult) => {
-        dispatch(payOrder(id, paymentResult))
+        dispatch(payOrder(id, 'success'))
     }
 
     const deliverHandler = () => {
@@ -159,7 +159,8 @@ function OrderScreen() {
                                 <div>
                                     {loadingPay && <Loader />}
 
-                                    <Message variant="danger">PayPal is disabled on this demo</Message>
+                                    <Message variant="danger">PayPal is disabled on this demo. Click the button below to complete checkout.</Message>
+                                    <Button type="button" onClick={successPaymentHandler}>Complete payment</Button>
                                     {/* {!sdkReady ? (<Loader />)
                                             : (<PayPalButton amount={order.total_price} onSuccess={successPaymentHandler} />)
                                     } */}
