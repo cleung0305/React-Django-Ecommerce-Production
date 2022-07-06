@@ -8,16 +8,22 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import CartSummaryAccordion from '../components/CartSummaryAccordion'
-import { createOrder, payOrder } from '../actions/orderActions'
-import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+import { createOrder, payOrder, payOrderCancel, createOrderDemo } from '../actions/orderActions'
+import { ORDER_CREATE_RESET, ORDER_CREATE_RESET_DEMO } from '../constants/orderConstants'
 
 function PlaceOrderScreen() {
 
     const orderCreate = useSelector(state => state.orderCreate)
     const { order, success, error } = orderCreate
 
+    const orderCreateDemo = useSelector(state => state.orderCreateDemo)
+    const { order: orderDemo, success: successDemo, error: errorDemo } = orderCreateDemo
+
     const orderPay = useSelector(state => state.orderPay)
     const { loading: loadingPay, success: successPay} = orderPay
+
+    const orderPayCancel = useSelector(state => state.orderPayCancel)
+    const { loading: loadingPayCancel, success: successPayCancel, message:messagePayCancel } = orderPayCancel
 
     const cart = useSelector(state => state.cart)
     const { cartItems, shippingAddress, paymentMethod, subtotalPrice, shippingPrice, taxPrice, totalPrice } = cart
@@ -50,26 +56,27 @@ function PlaceOrderScreen() {
             navigate('/payment')
         }
 
-        // if(success && successPay) {
-        //     navigate(`/orders/${order._id}`)
-        //     dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
-        // }
-
         if(!window.paypal){
             addPayPalScript() //check if paypal sdk is mounted to page
         } else {
             setSdkReady(true)
         }
 
-        //demo version
-        if(success){
-            dispatch(payOrder(order._id, 'success'))
-        }
-        if(successPay) {
+        //Paypal Payment Successful
+        if(success && successPay) {
             navigate(`/orders/${order._id}`)
             dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
         }
-    }, [success, successPay, navigate])
+
+        //demo pay button
+        if(successDemo){
+            dispatch(payOrder(orderDemo._id, 'success'))
+        }
+        if(successDemo && successPay) {
+            navigate(`/orders/${orderDemo._id}`)
+            dispatch({ type: ORDER_CREATE_RESET_DEMO }) //clear the order state
+        }
+    }, [success, successDemo, successPay, navigate])
 
     const placeOrderHandler = () => {
         const orderToCreate = {
@@ -86,6 +93,26 @@ function PlaceOrderScreen() {
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(order._id, paymentResult))
+    }
+
+    const cancelPaymentHandler = () => {
+        const currOrderId = JSON.parse(localStorage.getItem('currentOrder'))._id
+        console.log(currOrderId)
+        dispatch(payOrderCancel(currOrderId))
+    }
+
+    //Demo
+    const placeOrderDemoHandler = () => {
+        const orderToCreate = {
+            orderItems: cartItems,
+            shippingAddress: shippingAddress,
+            paymentMethod: paymentMethod,
+            subtotalPrice: subtotalPrice,
+            shippingPrice: shippingPrice,
+            taxPrice: taxPrice,
+            totalPrice: totalPrice,
+        }
+        dispatch(createOrderDemo(orderToCreate))
     }
 
     return (
@@ -164,11 +191,12 @@ function PlaceOrderScreen() {
                         <div>
                             {loadingPay && <Loader />}
 
-                            <Message variant="danger">PayPal is disabled on this demo. Click the button below to complete checkout.</Message>
-                            <Button type="button" onClick={placeOrderHandler}>Complete payment</Button>
-                            {/* {!sdkReady ? (<Loader />)
-                                    : (<PayPalButton amount={totalPrice} onClick={placeOrderHandler} onSuccess={successPaymentHandler} />)
-                            } */}
+                            <Message variant="danger">PayPal is sandbox mode. If you do not have a sandbox paypal account, click the button below to complete checkout.</Message>
+                            <Button type="button" onClick={placeOrderDemoHandler}>Complete payment</Button>
+
+                            {!sdkReady ? (<Loader />)
+                                    : (<PayPalButton amount={totalPrice} onClick={placeOrderHandler} onCancel={cancelPaymentHandler} onSuccess={successPaymentHandler} />)
+                            }
                         </div>
                         : <Message variant="danger">Sorry, we currently only accept PayPal payments</Message>
                     }

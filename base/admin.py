@@ -24,7 +24,7 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_filter = ['name']
 
     def get_total_price(self, obj):
-        return obj.price * obj.quantity
+        return obj.price * obj.qty
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)

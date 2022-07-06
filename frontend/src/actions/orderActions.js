@@ -2,6 +2,8 @@ import {
     ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS, ORDER_CREATE_FAIL,
     ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS, ORDER_DETAILS_FAIL,
     ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL,
+    ORDER_PAY_CANCEL_REQUEST, ORDER_PAY_CANCEL_SUCCESS, ORDER_PAY_CANCEL_FAIL,
+    ORDER_CREATE_REQUEST_DEMO, ORDER_CREATE_SUCCESS_DEMO, ORDER_CREATE_FAIL_DEMO, //Demo 
     ORDER_DELIVER_REQUEST, ORDER_DELIVER_SUCCESS, ORDER_DELIVER_FAIL,
     ORDER_LIST_MY_REQUEST, ORDER_LIST_MY_SUCCESS, ORDER_LIST_MY_FAIL,
     ORDER_LIST_REQUEST, ORDER_LIST_SUCCESS, ORDER_LIST_FAIL
@@ -34,9 +36,44 @@ export const createOrder = (order) => async(dispatch, getState) => {
             payload: data
         })
 
+        localStorage.setItem('currentOrder', JSON.stringify(data))
+
     } catch (error) {
         dispatch({
             type: ORDER_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+// Create order Demo
+export const createOrderDemo = (order) => async(dispatch, getState) => {
+    try{
+        dispatch({
+            type: ORDER_CREATE_REQUEST_DEMO,
+        })
+
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.post('api/orders/add/', order, config)
+
+        dispatch({
+            type: ORDER_CREATE_SUCCESS_DEMO,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_CREATE_FAIL_DEMO,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -109,6 +146,38 @@ export const payOrder = (id, paymentResult) => async(dispatch, getState) => {
     } catch (error){
         dispatch({
             type: ORDER_PAY_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message
+        })
+    }
+}
+
+
+export const payOrderCancel = (id) => async(dispatch, getState) => {
+    try{
+        dispatch({
+            type: ORDER_PAY_CANCEL_REQUEST
+        })
+
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.delete(`/api/orders/cancel-order/${id}`, config)
+
+        dispatch({
+            type: ORDER_PAY_CANCEL_SUCCESS,
+            payload: data
+        })
+    } catch (error){
+        dispatch({
+            type: ORDER_PAY_CANCEL_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message

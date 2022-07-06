@@ -66,8 +66,8 @@ def addOrderItems(request):
 @permission_classes([IsAuthenticated])
 def getMyOrders(request):
     user = request.user
-    orders = user.order_set.exclude( #show only paid orders, **Orders those aren't paid and older than 14days are excluded**
-        created_date__lte=timezone.now()-timezone.timedelta(days=14),
+    orders = user.order_set.exclude( #show only paid orders, **Orders those aren't paid and older than 5days are excluded**
+        created_date__lte=timezone.now()-timezone.timedelta(days=7),
         isPaid=False
     )
     serializer = OrderSerializer(orders, many=True)
@@ -121,3 +121,13 @@ def updateOrderToDelivered(request, pk):
     order.deliverd_date = datetime.now()
     order.save()
     return Response('Order delivered')
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def remove_last_created_order(request, pk) -> Response:
+    try:
+        order_to_remove = Order.objects.get(user=request.user, _id=pk, isPaid=False)
+        order_to_remove.delete()
+        return Response(f'Payment not complete, please try again')
+    except:
+        return Response({'message': 'Some errors occured, your payment has not been processed, please try again'})

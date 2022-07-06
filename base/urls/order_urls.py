@@ -4,6 +4,7 @@ from base.views import order_views as views
 urlpatterns = [
     path('add/', views.addOrderItems, name="add-orders"),
     path('myorders/', views.getMyOrders, name="my-orders"),
+    path('cancel-order/<str:pk>/', views.remove_last_created_order, name="cancel-order"),
     path('<str:pk>/', views.getOrderById, name="get-order"),
     path('<str:pk>/pay/', views.updateOrderToPaid, name="update-order-paid"),
     path('<str:pk>/deliver/', views.updateOrderToDelivered, name="update-order-delivered"),
