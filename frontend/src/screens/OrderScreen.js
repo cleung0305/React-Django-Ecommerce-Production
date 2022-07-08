@@ -103,7 +103,7 @@ function OrderScreen() {
                                         </Col>
                                     </Row>
                                     <div className="m-2">
-                                        {order.isDelivered ? (<Message variant="success">Delivered on {order.deliverd_date}</Message>)
+                                        {order.isDelivered ? (<Message variant="success">Delivered on {order.deliverd_date.substr(0, 10)}</Message>)
                                             : (<Message variant="primary">Delivery in progress </Message>)
                                         }
                                     </div>
@@ -116,7 +116,7 @@ function OrderScreen() {
                                         { order.paymentMethod }
                                     </div>
                                     <div className="m-2">
-                                        {order.isPaid ? (<Message variant="success">Transaction complete on {order.paid_date}</Message>)
+                                        {order.isPaid ? (<Message variant="success">Transaction complete on {order.paid_date.substr(0, 10)}</Message>)
                                             : (<Message variant="warning">Transaction incomplete</Message>)
                                         }
                                     </div>
